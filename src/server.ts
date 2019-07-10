@@ -1,25 +1,30 @@
-import * as path from 'path';
-import * as express from 'express';
-import * as sockets from 'socket.io';
-import  { createServer } from 'http';
+import * as path from "path";
+import express from "express";
+import socketIo from "socket.io";
+import { createServer } from "http";
+import { json, urlencoded } from "body-parser";
+import cors from "cors";
 
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 const app = express();
+app.use(json());
+app.use(urlencoded({ extended: false }));
+app.use(cors());
+
 const http = createServer(app);
-const io = sockets(http);
+const io = socketIo(http);
 
-
-app.get('/', function(req, res){
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+app.get("/", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
+io.on("connection", socket => {
+  socket.on("chat message", data => {
+    io.emit("chat message", data);
   });
 });
 
-http.listen(port, function(){
-  console.log('listening on *:' + port);
+http.listen(port, () => {
+  console.log(`listening on *: ${port}`);
 });

@@ -22,15 +22,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
+
+      const user = {
+        name: `User ${Date.now()}`
+      };
+
       $(function () {
         var socket = io();
         $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
+          socket.emit('chat message', {
+            user,
+            msg: $('#m').val()
+          });
+          $('#m').val('')
           return false;
         });
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
+        socket.on('chat message', function(data){
+          const { msg, user } = data;
+          $('#messages').append($('<li>').html(`<b>${user.name}:</b> ${msg}`));
           window.scrollTo(0, document.body.scrollHeight);
         });
       });
