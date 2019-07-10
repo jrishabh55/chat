@@ -3,13 +3,14 @@ import express from "express";
 import socketIo from "socket.io";
 import { createServer } from "http";
 import { json, urlencoded } from "body-parser";
-import cors from "cors";
 
+import cors from "cors";
+ 
 const port = process.env.PORT || 3000;
 
 const app = express();
 app.use(json());
-app.use(urlencoded({ extended: false }));
+app.use(urlencoded({ extended: true }));
 app.use(cors());
 
 const http = createServer(app);
