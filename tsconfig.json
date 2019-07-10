@@ -2,12 +2,13 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-       "module": "system",
+       "module": "commonjs",
        "noImplicitAny": true,
        "removeComments": true,
        "allowUnreachableCode": false,
        "strictNullChecks": true,
-       "sourceMap": true
+       "sourceMap": true,
+       "allowSyntheticDefaultImports": true,
   },
    "include": [
        "src/**/*"
