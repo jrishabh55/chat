@@ -30,14 +30,14 @@
       $(function () {
         var socket = io();
         $('form').submit(function(){
-          socket.emit('chat message', {
+          socket.emit('chat', {
             user,
             msg: $('#m').val()
           });
           $('#m').val('')
           return false;
         });
-        socket.on('chat message', function(data){
+        socket.on('chat', function(data){
           const { msg, user } = data;
           $('#messages').append($('<li>').html(`<b>${user.name}:</b> ${msg}`));
           window.scrollTo(0, document.body.scrollHeight);

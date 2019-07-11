@@ -19,9 +19,11 @@ app.get("/", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
+
+
 io.on("connection", socket => {
-  socket.on("chat message", data => {
-    io.emit("chat message", data);
+  socket.on("chat", data => {
+    io.emit("chat", data);
   });
 });
 
