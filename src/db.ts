@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import mongooseTimestamp from 'mongoose-timestamp';
 import mongooseFindoneorcreate from 'mongoose-findoneorcreate';
 
@@ -10,5 +10,17 @@ mongoose.plugin(mongooseTimestamp, {
 });
 
 mongoose.plugin(mongooseFindoneorcreate);
+
+function mapId (schema: Schema) {
+  schema.virtual('id').get(function (this: any) {
+    return this._id.toHexString();
+  })
+
+  schema.set('toJSON', {
+    virtuals: true
+  });
+}
+
+mongoose.plugin(mapId);
 
 export default mongoose;
