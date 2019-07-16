@@ -15,6 +15,13 @@
     </style>
   </head>
   <body>
+    <div>
+      <span>Room: </span>
+      <span id="room_div">
+        <input type="text" id="room" />
+        <button id="add_chat">Submit</button>
+      </span>
+    </div>
     <ul id="messages"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
@@ -22,26 +29,62 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
+      var socket = io();
+      const roomElem = $('#room');
+      const roomDivElem = $('#room_div');
+      const form = $('form');
+      const addChat = $('#add_chat');
+      const messagesElem = $('#messages');
+      const mElem = $('#m');
 
+      const id = "1";
       const user = {
-        name: `User ${Date.now()}`
+        id,
+        name: `User ${id}`
       };
 
-      $(function () {
-        var socket = io();
-        $('form').submit(function(){
-          socket.emit('chat', {
-            user,
-            msg: $('#m').val()
-          });
-          $('#m').val('')
-          return false;
-        });
-        socket.on('chat', function(data){
-          const { msg, user } = data;
-          $('#messages').append($('<li>').html(`<b>${user.name}:</b> ${msg}`));
+      const chat = (name) => socket.on(name, function(data){
+          const { msg } = data;
+          messagesElem.append($('<li>').html(`<b>${user.name}:</b> ${msg}`));
           window.scrollTo(0, document.body.scrollHeight);
         });
+
+      let chatRoom = 'chat';
+
+      $(function () {
+        form.submit(function(){
+          console.log(chatRoom);
+          socket.emit(chatRoom, {
+            user,
+            msg: mElem.val()
+          });
+          mElem.val('')
+          return false;
+        });
+
+        chat(chatRoom);
+
+      });
+
+      $(function () {
+        addChat.click(() => {
+            const val = roomElem.val();
+            socket.emit('new-chat', {
+              user,
+              name: val,
+            });
+
+            socket.on('new-chat', function (data) {
+              const { name, id } = data;
+              socket.off(chatRoom);
+              chatRoom = `chat-${id}`;
+              roomElem.hide();
+              addChat.hide();
+              roomDivElem.text(name);
+              chat(chatRoom);
+            });
+
+          });
       });
     </script>
   </body>

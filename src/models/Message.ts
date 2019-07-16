@@ -7,15 +7,17 @@ export interface IMessage extends IDocument {
 }
 
 const messageSchema: Schema = new Schema({
-  name: {
+  msg: {
     type: SchemaTypes.String,
     required: true,
     minlength: 5,
   },
-  user_id: [{
+  user_id: {
     type: SchemaTypes.ObjectId,
     ref: 'User'
-  }]
+  }
 });
 
-export default db.model('Message', messageSchema) as IModel<IMessage>;
+const model = db.model('Message', messageSchema) as IModel<IMessage>;
+
+export default model;
