@@ -8,7 +8,10 @@ import User from "models/User";
 import Chat from "models/Chat";
 import Message from "./models/Message";
 
-const port = process.env.PORT || 3000;
+const serverConf = {
+  port: 3000,
+  host: '0.0.0.0'
+};
 
 const app = express();
 app.use(json());
@@ -43,6 +46,6 @@ io.on("connection", socket => {
   });
 });
 
-http.listen(port, () => {
-  console.log(`listening on *: ${port}`);
+http.listen(serverConf, () => {
+  console.log(`listening on ${serverConf.host}: ${serverConf.port}`);
 });
