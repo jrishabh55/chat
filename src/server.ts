@@ -27,11 +27,10 @@ app.get("/", (req, res) => {
 
 io.on("connection", socket => {
   const listenChat = (name: string) => {
-    socket.on(`chat-${name}`, async chatData => {
+    return socket.on(`chat-${name}`, async chatData => {
       const { user, msg } = chatData;
       const $user = await User.findOneOrCreate({ external_id: user.id }, { external_id: user.id });
       const $message = await Message.create({ msg, user_id: $user.id });
-      console.log(chatData);
       io.emit(`chat-${name}`, { chatData,...$message.toJSON() });
     });
   };
@@ -39,8 +38,12 @@ io.on("connection", socket => {
   socket.on("new-chat", async data => {
     const { user, name } = data;
     const $user = await User.findOneOrCreate({ external_id: user.id }, { external_id: user.id });
-    const $chat = await Chat.findOneOrCreate({ name }, { name, user_id: [$user.id] });
-    console.log($chat.toJSON());
+    const $chat = await Chat.findOneOrCreate({ name }, { name, users: [$user.id] });
+    if ($chat.users.indexOf($user.id) === -1) {
+      $chat.users.push($user.id);
+      $chat.save();
+    }
+
     io.emit('new-chat', $chat);
     listenChat($chat.id);
   });
