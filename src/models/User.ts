@@ -1,12 +1,12 @@
-import { IModel, Schema, SchemaTypes } from 'models';
+import { IDocument, Schema, SchemaTypes, IModel } from 'models';
 import db from 'db';
 
-export interface IMessage extends IModel {
+export interface IUser extends IDocument {
   external_id: string;
   blocked: string[];
 }
 
-const userSchema: Schema = new Schema({
+const userSchema: Schema<IUser> = new Schema({
   external_id: {
     type: SchemaTypes.String,
     required: true,
@@ -17,4 +17,4 @@ const userSchema: Schema = new Schema({
   }]
 });
 
-export default db.model('User', userSchema);
+export default db.model('User', userSchema) as IModel<IUser>;

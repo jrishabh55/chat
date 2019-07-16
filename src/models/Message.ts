@@ -1,7 +1,7 @@
-import { IModel, Schema, SchemaTypes } from 'models';
+import { IDocument, Schema, SchemaTypes, IModel } from 'models';
 import db from 'db';
 
-export interface IMessage extends IModel {
+export interface IMessage extends IDocument {
   msg: string;
   user_id: string;
 }
@@ -18,4 +18,4 @@ const messageSchema: Schema = new Schema({
   }]
 });
 
-export default db.model('Message', messageSchema);
+export default db.model('Message', messageSchema) as IModel<IMessage>;

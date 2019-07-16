@@ -1,15 +1,13 @@
-import { IModel, Schema, SchemaTypes } from 'models';
+import { IDocument, Schema, SchemaTypes, IModel } from 'models';
 import db from 'db';
 
 interface IUser {
   id: string;
 }
 
-export interface IChat extends IModel {
+export interface IChat extends IDocument {
   name: string;
   users: IUser[];
-  created_at: Date;
-  modified_at: Date;
 }
 
 const chatSchema: Schema = new Schema({
@@ -24,4 +22,4 @@ const chatSchema: Schema = new Schema({
   }]
 });
 
-export default db.model('Chat', chatSchema);
+export default db.model('Chat', chatSchema) as IModel<IChat>;
