@@ -37,17 +37,16 @@
       const messagesElem = $('#messages');
       const mElem = $('#m');
 
-      const id = "1";
       const user = {
-        id,
-        name: `User ${id}`
+        id: Date.now(),
+        name: `User ${this.id}`
       };
 
       const chat = (name) => socket.on(name, function(data){
-          const { msg } = data;
-          messagesElem.append($('<li>').html(`<b>${user.name}:</b> ${msg}`));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
+        const { msg, user_id } = data;
+        messagesElem.append($('<li>').html(`<b>User ${user_id}:</b> ${msg}`));
+        window.scrollTo(0, document.body.scrollHeight);
+      });
 
       let chatRoom = 'chat';
 
