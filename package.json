@@ -4,6 +4,7 @@
   "description": "Basic Chat backend",
   "main": "src/server.ts",
   "scripts": {
+    "start": "npm run start:dev",
     "start:dev": "nodemon"
   },
   "repository": {
