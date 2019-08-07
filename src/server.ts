@@ -9,7 +9,7 @@ import Chat from "models/Chat";
 import Message from "./models/Message";
 
 const serverConf = {
-  port: 3000,
+  port: process.env.PORT || 80,
   host: '0.0.0.0'
 };
 
