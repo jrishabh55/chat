@@ -28,10 +28,14 @@ app.get("/", (req, res) => {
 io.on("connection", socket => {
   const listenChat = (name: string) => {
     return socket.on(`chat-${name}`, async chatData => {
-      const { user, msg } = chatData;
-      const $user = await User.findOneOrCreate({ external_id: user.id }, { external_id: user.id });
-      const $message = await Message.create({ msg, user_id: $user.id });
-      io.emit(`chat-${name}`, { chatData,...$message.toJSON() });
+      try {
+        const { user, msg } = chatData;
+        const $user = await User.findOneOrCreate({ external_id: user.id }, { external_id: user.id });
+        const $message = await Message.create({ msg, user_id: $user.id });
+        io.emit(`chat-${name}`, { chatData,...$message.toJSON(), status: 'success' });
+      } catch (err) {
+          io.emit(`chat-${name}`, { status: 'error', error: err });
+      }
     });
   };
 
