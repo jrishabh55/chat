@@ -33,7 +33,9 @@
   ```js
   const event = "create-chat";
   const body = {
-    name: 'chat-name',
+    chat {
+      name: 'chat-name',
+    },
     user: {
       id: 'id-received-in-create-user'
     }
@@ -122,10 +124,23 @@
 
 ## New message in a chat
 
+- Request
+
+  ```js
+    const room = "chat-id";
+    const event = "new-message",
+
+    const body = {
+      msg: 'message',
+      type: 'text',
+    };
+  ```
+
 - Response
 
 ```js
-  const room = "chat_id";
+  const room = "chat-id";
+  const event = "new-message";
   const body = {
     id: 'message-id',
     msg: 'chat-name',
