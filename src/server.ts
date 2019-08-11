@@ -4,6 +4,8 @@ import socketIo from "socket.io";
 import { createServer } from "http";
 import { json, urlencoded } from "body-parser";
 import cors from "cors";
+import { events } from 'app';
+import UserController from "controllers/UserController";
 import User from "models/User";
 import Chat from "models/Chat";
 import Message from "./models/Message";
@@ -26,31 +28,9 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", socket => {
-  const listenChat = (name: string) => {
-    return socket.on(`chat-${name}`, async chatData => {
-      try {
-        const { user, msg } = chatData;
-        const $user = await User.findOneOrCreate({ external_id: user.id }, { external_id: user.id });
-        const $message = await Message.create({ msg, user_id: $user.id });
-        io.emit(`chat-${name}`, { chatData,...$message.toJSON(), status: 'success' });
-      } catch (err) {
-          io.emit(`chat-${name}`, { status: 'error', error: err });
-      }
-    });
-  };
-
-  socket.on("new-chat", async data => {
-    const { user, name } = data;
-    const $user = await User.findOneOrCreate({ external_id: user.id }, { external_id: user.id });
-    const $chat = await Chat.findOneOrCreate({ name }, { name, users: [$user.id] });
-    if ($chat.users.indexOf($user.id) === -1) {
-      $chat.users.push($user.id);
-      $chat.save();
-    }
-
-    io.emit('new-chat', $chat);
-    listenChat($chat.id);
-  });
+  UserController.setSockets(socket);
+  socket.on(events.createUser, UserController.createOrFindUser);
+  // socket.on(events.createChat, ChatCon);
 });
 
 http.listen(serverConf, () => {
