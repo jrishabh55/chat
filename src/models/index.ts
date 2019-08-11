@@ -6,7 +6,7 @@ export interface IDocument extends Document {
 }
 
 export interface IModel<T> extends Model<IDocument> {
-  findOneOrCreate(condition: object, data: object): T;
+  findOneOrCreate(condition: object, data: object): Promise<T>;
 }
 
 export { Schema, SchemaTypes };
