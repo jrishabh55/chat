@@ -36,9 +36,9 @@
     chat {
       name: 'chat-name',
     },
-    user: {
-      id: 'id-received-in-create-user'
-    }
+    users: [
+      'id-received-in-create-user'
+    ]
   };
   ```
 
