@@ -23,4 +23,8 @@ function mapId (schema: Schema) {
 
 mongoose.plugin(mapId);
 
+export const Types = mongoose.Types;
+
+export { Schema };
+
 export default mongoose;
