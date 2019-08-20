@@ -6,9 +6,7 @@ import { json, urlencoded } from "body-parser";
 import cors from "cors";
 import { events } from 'app';
 import UserController from "controllers/UserController";
-import User from "models/User";
-import Chat from "models/Chat";
-import Message from "./models/Message";
+import ChatController from "controllers/ChatController";
 
 const serverConf = {
   port: process.env.PORT || 80,
@@ -30,6 +28,7 @@ app.get("/", (req, res) => {
 io.on("connection", socket => {
   UserController.setSockets(socket);
   socket.on(events.createUser, UserController.createOrFindUser);
+  socket.on(events.createChat, ChatController.create);
   // socket.on(events.createChat, ChatCon);
 });
 
