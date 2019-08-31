@@ -8,4 +8,8 @@ export class Controller {
   public setSockets(socket: Socket) {
     this.socket = socket;
   }
+
+  protected emit (event: string, ...args: any) {
+    this.socket.emit(event, ...args);
+  }
 }

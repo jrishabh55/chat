@@ -4,9 +4,10 @@ import { events } from 'app';
 import Chat, { IChat } from 'models/Chat';
 import { ICreateChatData } from 'interfaces/Chat';
 import User from 'models/User';
+import { Controller } from 'controllers/Controller';
 
 @autobind
-export class ChatController {
+export class ChatController extends Controller {
 
   public socket: Socket;
 
@@ -14,6 +15,7 @@ export class ChatController {
     const { user, chat } = data;
     const $user = await User.findById(user.id);
     if ($user) {
+      const $chat = Chat.findOneOrCreate();
       this.socket.emit(events.createChat, { user: $user.toJSON() });
     } else {
       this.socket.emit(events.createChat, {
@@ -25,16 +27,6 @@ export class ChatController {
         ]
       });
     }
-  }
-
-  public setSockets(socket: Socket) {
-    if (!socket) {
-      this.socket = socket;
-    }
-  }
-
-  private emit (event: string, ...args: any) {
-    this.socket.emit(event, ...args);
   }
 }
 

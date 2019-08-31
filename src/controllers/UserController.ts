@@ -12,7 +12,7 @@ export class UserController extends Controller {
   public async createOrFindUser(chatData: IUserData) {
     const { user } = chatData;
     const $user = await this.create({ id: user.externalUserId });
-    this.socket.emit('new-user', { user: $user.toJSON() });
+    this.emit('new-user', { user: $user.toJSON() });
   }
 
   private async create(user: IUser | any) {
