@@ -4,10 +4,12 @@
     "tslint-config-airbnb",
     "tslint-config-prettier"
   ],
+  "defaultSeverity": "error",
   "rules": {
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "member-ordering": false,
-    "no-console": false
+    "no-console": false,
+    "semicolon": true
   }
 }
