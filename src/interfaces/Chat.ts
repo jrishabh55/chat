@@ -8,7 +8,5 @@ export interface ICreateChatData {
   chat: {
     name: string;
   }
-  user: {
-    id: string;
-  }
+  users: string[];
 }

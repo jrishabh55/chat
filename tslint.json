@@ -10,6 +10,12 @@
     "object-literal-sort-keys": false,
     "member-ordering": false,
     "no-console": false,
-    "semicolon": true
+    "semicolon": true,
+    "no-unused-variable": [true, { "ignore-pattern": "^_" }],
+    "no-unused-expression": true,
+    "no-duplicate-imports": true,
+    "no-empty": true,
+    "one-variable-per-declaration": true,
+    "no-use-before-declare": true
   }
 }

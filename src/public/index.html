@@ -30,6 +30,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
       var socket = io();
+      const eventName = 'create-chat';
       const roomElem = $('#room');
       const roomDivElem = $('#room_div');
       const form = $('form');
@@ -37,10 +38,7 @@
       const messagesElem = $('#messages');
       const mElem = $('#m');
 
-      const user = {
-        id: Date.now(),
-        name: `User ${this.id}`
-      };
+      const users = ['5d2df718d47dee5aff5ee6e1'];
 
       const chat = (name) => socket.on(name, function(data){
         const { msg, user_id } = data;
@@ -68,12 +66,14 @@
       $(function () {
         addChat.click(() => {
             const val = roomElem.val();
-            socket.emit('new-chat', {
-              user,
-              name: val,
+            socket.emit(eventName, {
+              users,
+              chat: {
+                name: val,
+              },
             });
 
-            socket.on('new-chat', function (data) {
+            socket.on(eventName, function (data) {
               const { name, id } = data;
               socket.off(chatRoom);
               chatRoom = `chat-${id}`;
