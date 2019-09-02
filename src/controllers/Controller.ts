@@ -3,7 +3,7 @@ import { autobind } from 'core-decorators';
 
 @autobind
 export class Controller {
-  public socket: Socket;
+  protected socket: Socket;
 
   public setSockets(socket: Socket) {
     this.socket = socket;

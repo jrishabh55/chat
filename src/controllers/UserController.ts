@@ -1,13 +1,10 @@
 import { Controller } from 'controllers/Controller';
-import { Socket } from 'socket.io';
 import { autobind } from 'core-decorators';
 import User, { IUser } from 'models/User';
 import { IUserData } from 'interfaces/Chat';
 
 @autobind
 export class UserController extends Controller {
-
-  public socket: Socket;
 
   public async createOrFindUser(chatData: IUserData) {
     const { user } = chatData;
