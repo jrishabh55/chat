@@ -131,8 +131,14 @@
     const event = "new-message",
 
     const body = {
-      msg: 'message',
-      type: 'text',
+      chatRoom: 'room',
+      user: {
+        id: string,
+      },
+      message: {
+        value: 'message',
+        type: 'img or text or file'
+      },
     };
   ```
 
