@@ -10,3 +10,14 @@ export interface ICreateChatData {
     users: string[];
   };
 }
+
+export interface INewMessage {
+  chatRoom: string;
+  user: {
+    id: string;
+  };
+  message: {
+    value: string;
+    type: "img" | "text" | "file";
+  };
+}
