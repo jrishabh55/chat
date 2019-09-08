@@ -2,12 +2,12 @@ import { IDocument, Schema, SchemaTypes, IModel } from 'models';
 import db from 'db';
 
 export interface IMessage extends IDocument {
-  msg: string;
+  message: string;
   user_id: string;
 }
 
 const messageSchema: Schema = new Schema({
-  msg: {
+  message: {
     type: SchemaTypes.String,
     required: true,
     minlength: 5,
