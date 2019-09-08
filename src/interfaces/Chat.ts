@@ -7,6 +7,6 @@ export interface IUserData {
 export interface ICreateChatData {
   chat: {
     name: string;
-  }
-  users: string[];
+    users: string[];
+  };
 }

@@ -13,7 +13,7 @@ export class ChatController extends Controller {
   public socket: Socket;
 
   public async create(data: ICreateChatData) {
-    const { users, chat } = data;
+    const { name, users } = data.chat;
 
     const $users = await User.find({
       '_id': {
@@ -21,11 +21,9 @@ export class ChatController extends Controller {
       }
     }).exec();
 
-    console.log($users);
-
     if ($users.length > 0) {
       const $chat = await Chat.create({
-        name: chat.name,
+        name,
         users: $users.map(u => u.id)
       });
 
