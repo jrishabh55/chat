@@ -4,7 +4,7 @@ import socketIo from "socket.io";
 import { createServer } from "http";
 import { json, urlencoded } from "body-parser";
 import cors from "cors";
-import { events } from 'app';
+import app from 'app';
 import UserController from "controllers/UserController";
 import ChatController from "controllers/ChatController";
 
@@ -13,23 +13,23 @@ const serverConf = {
   host: '0.0.0.0'
 };
 
-const app = express();
-app.use(json());
-app.use(urlencoded({ extended: false }));
-app.use(cors());
+const server = express();
+server.use(json());
+server.use(urlencoded({ extended: false }));
+server.use(cors());
 
-const http = createServer(app);
+const http = createServer(server);
 const io = socketIo(http);
 
-app.get("/", (req, res) => {
+server.get("/", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
 io.on("connection", socket => {
-  UserController.setSockets(socket);
+  const { events } = app;
+  app.setSockets(socket);
   socket.on(events.createUser, UserController.createOrFindUser);
   socket.on(events.createChat, ChatController.create);
-  // socket.on(events.createChat, ChatCon);
 });
 
 http.listen(serverConf, () => {
