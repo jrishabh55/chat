@@ -1,9 +1,10 @@
 import { Socket } from 'socket.io';
 import { autobind } from 'core-decorators';
+import app from 'app';
 
 @autobind
 export class Controller {
-  protected socket: Socket;
+  protected socket: Socket = app && app.socket;
 
   public setSockets(socket: Socket) {
     this.socket = socket;
