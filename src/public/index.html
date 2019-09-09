@@ -55,8 +55,9 @@
       </span>
     </div>
     <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+    <form id="message-form" action="#">
+      <input id="m" autocomplete="off" />
+      <button id="submit">Send</button>
     </form>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -66,26 +67,39 @@
       const newMessage = "new-message";
       const roomElem = $("#room");
       const roomDivElem = $("#room_div");
-      const form = $("form");
+      const btn = $("#submit");
       const addChat = $("#add_chat");
       const messagesElem = $("#messages");
       const mElem = $("#m");
-      let chatRoom = "chat";
+      let chatRoom = "/chat";
+      let chatSocket;
 
       const users = ["5d2df718d47dee5aff5ee6e1"];
 
       const chat = name => {
-        socket.in(name).on(newMessage, function(data) {
-          const { message, user_id } = data;
-          messagesElem.append($("<li>").html(`<b>User ${user_id}:</b> ${message}`));
-          window.scrollTo(0, document.body.scrollHeight);
+        const chatIO = io(name, { forceNew: true });
+        console.log('name', name);
+        chatIO.on('connection', $chatSocket => {
+          console.log('Connection', name);
+          chatSocket = $chatSocket
+          $chatSocket.on(newMessage, function(data) {
+            const { message, user_id } = data;
+            console.log('new-message', name);
+            messagesElem.append($("<li>").html(`<b>User ${user_id}:</b> ${message}`));
+            window.scrollTo(0, document.body.scrollHeight);
+          });
+
         });
       }
 
 
+
       $(function() {
-        form.submit(function() {
-          socket.in(name).emit('new-message', {
+        btn.on('click', function(e) {
+          e.preventDefault();
+
+          chatSocket.emit(newMessage, {
+            chatRoom: chatRoom,
             user: {
               id: users[0],
             },
@@ -94,16 +108,12 @@
               type: 'text',
             }
           });
-          mElem.val("");
           return false;
         });
 
-        chat(chatRoom);
-      });
-
-      $(function() {
         addChat.click(() => {
           const val = roomElem.val();
+          console.log(eventName, 'Event triggering');
           socket.emit(eventName, {
             chat: {
               users,
@@ -113,13 +123,14 @@
 
           socket.on(eventName, function(data) {
             if (data.status === "ok") {
-              const { name, id } = data.chat;
+              console.log('run-create-chat');
+              const { name, id } = data;
               socket.off(eventName);
-              socket.leave(chatRoom);
-              chatRoom = `chat-${id}`;
+              chatRoom = `/chat/${id}`;
               roomElem.hide();
               addChat.hide();
-              roomDivElem.text(name);
+              roomDivElem.text(mElem.val());
+              mElem.val("");
               chat(chatRoom);
             }
           });
