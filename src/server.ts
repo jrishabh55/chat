@@ -28,6 +28,7 @@ server.get("/", (req, res) => {
 io.on("connection", socket => {
   const { events } = app;
   app.setSockets(socket);
+  app.setIo(io);
   socket.on(events.createUser, UserController.createOrFindUser);
   socket.on(events.createChat, ChatController.create);
 });
