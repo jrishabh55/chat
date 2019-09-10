@@ -15,7 +15,6 @@ export class ChatController extends Controller {
 
   public async create(data: ICreateChatData) {
     const { name, users } = data.chat;
-    console.log(events.createChat, 'event triggered');
 
     const $users = await User.find({
       '_id': {
@@ -29,14 +28,12 @@ export class ChatController extends Controller {
         users: $users.map(u => u.id)
       })).toJSON();
 
-      // const chatRoom = `/chat/${$chat.id}`;
+      this.socket.emit(events.createChat, {
+        status: 'ok',
+        chat: $chat,
+      });
 
-      this.setupChatRoom($chat)
-      .then(() => {
-          console.log('Setup Done');
-          this.setupChatRoomMessage($chat.id);
-        });
-
+      this.setupChatRoomMessage($chat.id);
     } else {
       this.socket.emit(events.createChat, {
         status: 'error',
@@ -50,50 +47,29 @@ export class ChatController extends Controller {
   }
 
   public async setupChatRoomMessage(chatRoom: string) {
-    const socket = this.chatRooms[chatRoom];
+    console.log('Listening to', chatRoom);
+    this.socket.on(`/chat/${chatRoom}/${events.newMessage}`, this.newChatMessage);
+  }
 
-    this.socket.emit(events.createChat, {
-      status: 'ok',
-      connectionUrl: socket.id,
+  public async startListingToMessages() {
+    Chat.find({}).exec().then((chats) => {
+      chats.forEach(chat => {
+        this.setupChatRoomMessage(chat.id);
+      });
     });
-
-    this.chatRooms[chatRoom].on(events.newMessage, this.newChatMessage);
   }
 
   public async newChatMessage(data: INewMessage) {
-    const { chatRoom, message, user } = data;
-    console.log(data);
-    const $chat = await Message.create({
+    const { chat, message, user } = data;
+
+    const $message = await Message.create({
       user_id: user.id,
       message: message.value,
       type: message.type,
-      chat_id: chatRoom.split('/')[1],
+      chat_id: chat.id,
     });
 
-    this.chatRooms[chatRoom].emit($chat.toJSON());
-  }
-
-  public async setupChatRoom($chat: any): Promise<Socket> {
-    const chatRoom = `/chat/${$chat.id}`;
-    return new Promise((resolve) => {
-      console.log(chatRoom);
-      const nsp = this.io.of(chatRoom);
-      console.log(this.io.of);
-      console.log(nsp);
-
-      nsp.on("connection", (socket) => {
-        this.chatRooms[$chat.id] = socket;
-        console.log('connected', this.chatRooms[$chat.id]);
-        resolve(socket);
-      });
-
-
-      nsp.on('connection', (socket) => {
-        console.log('someone connected');
-      });
-
-    });
-
+    this.socket.emit(`/chat/${chat.id}/${events.newMessage}`, $message.toJSON());
   }
 }
 

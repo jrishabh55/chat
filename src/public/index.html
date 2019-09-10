@@ -71,35 +71,30 @@
       const addChat = $("#add_chat");
       const messagesElem = $("#messages");
       const mElem = $("#m");
+      let chatId;
       let chatRoom = "/chat";
-      let chatSocket;
 
       const users = ["5d2df718d47dee5aff5ee6e1"];
 
       const chat = name => {
-        const chatIO = io(name, { forceNew: true });
-        console.log('name', name);
-        chatIO.on('connection', $chatSocket => {
-          console.log('Connection', name);
-          chatSocket = $chatSocket
-          $chatSocket.on(newMessage, function(data) {
-            const { message, user_id } = data;
-            console.log('new-message', name);
-            messagesElem.append($("<li>").html(`<b>User ${user_id}:</b> ${message}`));
-            window.scrollTo(0, document.body.scrollHeight);
-          });
-
+        console.log('listing to', `${name}/${newMessage}`);
+        socket.on(`${name}/${newMessage}`, function(data) {
+          const { message, user_id } = data;
+          console.log('new-message', name);
+          messagesElem.append($("<li>").html(`<b>User ${user_id}:</b> ${message}`));
+          window.scrollTo(0, document.body.scrollHeight);
         });
       }
-
-
 
       $(function() {
         btn.on('click', function(e) {
           e.preventDefault();
+          console.log('button click', `${chatRoom}/${newMessage}`);
 
-          chatSocket.emit(newMessage, {
-            chatRoom: chatRoom,
+          socket.emit(`${chatRoom}/${newMessage}`, {
+            chat: {
+              id: chatId,
+            },
             user: {
               id: users[0],
             },
@@ -123,13 +118,14 @@
 
           socket.on(eventName, function(data) {
             if (data.status === "ok") {
-              console.log('run-create-chat');
-              const { name, id } = data;
+              console.log('run-create-chat', data);
+              const { name, id } = data.chat;
               socket.off(eventName);
+              chatId = id;
               chatRoom = `/chat/${id}`;
               roomElem.hide();
               addChat.hide();
-              roomDivElem.text(mElem.val());
+              roomDivElem.text(name);
               mElem.val("");
               chat(chatRoom);
             }
