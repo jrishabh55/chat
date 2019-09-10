@@ -12,7 +12,9 @@ export interface ICreateChatData {
 }
 
 export interface INewMessage {
-  chatRoom: string;
+  chat: {
+    id: string;
+  };
   user: {
     id: string;
   };

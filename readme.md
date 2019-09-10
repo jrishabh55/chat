@@ -131,7 +131,9 @@
     const event = "new-message",
 
     const body = {
-      chatRoom: 'room',
+      chat: {
+        id: string,
+      },
       user: {
         id: string,
       },
