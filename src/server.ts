@@ -29,6 +29,8 @@ io.on("connection", socket => {
   const { events } = app;
   app.setSockets(socket);
   app.setIo(io);
+  ChatController.startListingToMessages();
+
   socket.on(events.createUser, UserController.createOrFindUser);
   socket.on(events.createChat, ChatController.create);
 });
