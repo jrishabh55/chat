@@ -1,7 +1,10 @@
 export interface IUserData {
   user: {
-    externalUserId: string
-  }
+    id?: string;
+    external_id?: string
+    name: string;
+    photo: string;
+  };
 }
 
 export interface ICreateChatData {
