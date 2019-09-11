@@ -4,11 +4,16 @@
 
 - Request
 
+-- Whenever create user is called. `name`, `photo` is mandatory, One of both `external_id` and `id` is required as well.
+
   ```js
   const event = "create-user";
   const body = {
     user: {
-      externalUserId: 'some-id-to-map-in-your-db'
+      external_id: 'some-id-to-map-in-your-db',
+      id: 'chat-id',
+      name: 'Name',
+      photo: 'Photo',
     }
   };
   ```
@@ -19,6 +24,7 @@
   const event = "create-user";
   const body = {
     user: {
+      external_id: 'external_id',
       id: 'user-id',
       created_at: 'DATETIME',
       modified_at: 'DATETIME',
