@@ -9,12 +9,22 @@ export class UserController extends Controller {
 
   public async createOrFindUser(chatData: IUserData) {
     const { user } = chatData;
-    const $user = await this.create({ id: user.externalUserId });
-    this.emit(events.createChat, { status: 'ok', user: $user.toJSON() });
+    try {
+      const $user = await this.create(user as any as IUser);
+      this.emit(events.createUser, { status: 'ok', user: $user.toJSON() });
+    } catch (err) {
+      this.emit(events.createUser, { status: 'error', error: err });
+    }
   }
 
-  private async create(user: IUser | any) {
-    return User.findOneOrCreate({ external_id: user.id }, { external_id: user.id });
+  private async create(user: IUser) {
+    const condition: any = {};
+    if (user.id) {
+      condition.id = user.id;
+    } else {
+      condition.external_id = user.external_id;
+    }
+    return User.findOneOrCreate(condition, user);
   }
 }
 
